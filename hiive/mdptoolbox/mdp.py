@@ -615,7 +615,7 @@ class PolicyIteration(MDP):
 
     def __init__(self, transitions, reward, gamma, policy0=None,
                  max_iter=100, eval_type=0, skip_check=False,
-                 run_stat_frequency=None):
+                 run_stat_frequency=None, sample_frequency=100):
         # Initialise a policy iteration MDP.
         #
         # Set up the MDP, but don't need to worry about epsilon values
@@ -650,6 +650,7 @@ class PolicyIteration(MDP):
         self.v_mean = []
         self.p_cumulative = []
         self.run_stat_frequency = max(1, max_iter // 10000) if run_stat_frequency is None else run_stat_frequency
+        self.sample_frequency = sample_frequency
 
         # Do some setup depending on the evaluation type
         if eval_type in (0, "matrix"):
@@ -843,7 +844,7 @@ class PolicyIteration(MDP):
 
             if take_run_stat:
                 v_cumulative.append(policy_V)
-                if len(v_cumulative) == 100:
+                if len(v_cumulative) == self.sample_frequency:
                     self.v_mean.append(_np.mean(v_cumulative, axis=1))
                     v_cumulative = []
                 if len(self.p_cumulative) == 0 or not _np.array_equal(self.policy, self.p_cumulative[-1][1]):
@@ -858,7 +859,7 @@ class PolicyIteration(MDP):
 
             if take_run_stat:
                 error_cumulative.append(error)
-                if len(error_cumulative) == 100:
+                if len(error_cumulative) == self.sample_frequency:
                     self.error_mean.append(_np.mean(error_cumulative))
                     error_cumulative = []
                 self.run_stats.append(run_stats[-1])
