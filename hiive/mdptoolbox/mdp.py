@@ -614,7 +614,7 @@ class PolicyIteration(MDP):
     """
 
     def __init__(self, transitions, reward, gamma, policy0=None,
-                 max_iter=1000, eval_type=0, skip_check=False,
+                 max_iter=100, eval_type=0, skip_check=False,
                  run_stat_frequency=None):
         # Initialise a policy iteration MDP.
         #
@@ -814,8 +814,8 @@ class PolicyIteration(MDP):
             'Max V': _np.max(v),
             'Mean V': _np.mean(v),
             'Iteration': i,
-            # 'Value': v.copy(),
-            # 'Policy': p.copy()
+            'Value': v.copy(),
+            'Policy': p.copy()
         }
         return run_stat
 
